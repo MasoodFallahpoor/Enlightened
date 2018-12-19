@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/navigation_graph"
+            app:startDestination="@+id/newsListFragment">
+
+    <fragment
+        android:id="@+id/newsListFragment"
+        android:name="ir.fallahpoor.enlightened.presentation.newslist.view.NewsListFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_news_list">
+        <action
+            android:id="@+id/action_newsListFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment"/>
+        <action
+            android:id="@+id/action_newsListFragment_to_searchNewsFragment"
+            app:destination="@id/searchNewsFragment"/>
+        <action
+            android:id="@+id/action_newsListFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="ir.fallahpoor.enlightened.presentation.about.AboutFragment"
+        android:label="@string/about"
+        tools:layout="@layout/fragment_about"/>
+    <fragment
+        android:id="@+id/searchNewsFragment"
+        android:name="ir.fallahpoor.enlightened.presentation.searchnews.view.SearchNewsFragment"
+        android:label="@string/search"
+        tools:layout="@layout/fragment_search_news"/>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="ir.fallahpoor.enlightened.presentation.settings.SettingsFragment"
+        android:label="@string/settings"/>
+
+</navigation>

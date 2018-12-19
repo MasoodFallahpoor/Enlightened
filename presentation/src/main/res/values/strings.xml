@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Enlightened</string>
+    <string name="try_again">Try again</string>
+    <string name="about">About</string>
+    <string name="app_description">One news reader to rule them all!</string>
+    <string name="powered_by">Powered by:</string>
+    <string name="news_api_url">NewsApi.org</string>
+    <string name="search">Search</string>
+    <string name="news">News</string>
+    <string name="search_news">Search news</string>
+    <string name="settings">Settings</string>
+    <string name="preference_title_save_news">Save News</string>
+    <string name="preference_summary_save_news">Stores a copy of news on your device for offline browsing.</string>
+    <string name="preference_key_save_news">saveNews</string>
+    <string name="preference_title_delete_news">Delete News</string>
+    <string name="preference_summary_delete_news">Deletes all news stored on your device.</string>
+    <string name="preference_key_delete_news">deleteNews</string>
+    <string name="preference_title_news_category">News Category</string>
+    <string name="preference_summary_news_category">Sets the category you want to get news for.</string>
+    <string name="preference_key_news_category">newsCategory</string>
+    <string name="delete_news_confirmation_message">Are you sure to delete all news?</string>
+    <string name="not_now">Not now</string>
+    <string name="delete_news">Delete them all!</string>
+    <string name="internet_not_connected">Internet not connected</string>
+    <string name="unknown_error">Oops, something went wrong</string>
+    <string name="news_deleted">News deleted</string>
+    <string name="news_deletion_failed">Could not delete news</string>
+    <string-array name="news_categories">
+        <item>All</item>
+        <item>Business</item>
+        <item>Entertainment</item>
+        <item>Health</item>
+        <item>Science</item>
+        <item>Sports</item>
+        <item>Technology</item>
+    </string-array>
+    <string-array name="news_categories_values">
+        <item></item>
+        <item>business</item>
+        <item>entertainment</item>
+        <item>health</item>
+        <item>science</item>
+        <item>sports</item>
+        <item>technology</item>
+    </string-array>
+</resources>

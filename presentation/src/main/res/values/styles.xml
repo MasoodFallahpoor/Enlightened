@@ -1,0 +1,29 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/backgroundPrimary</item>
+    </style>
+
+    <style name="NewsTitleTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/font_normal</item>
+    </style>
+
+    <style name="NewsSourceTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:textSize">@dimen/font_small</item>
+    </style>
+
+    <style name="NewsPublishDateTextAppearance" parent="NewsSourceTextAppearance"/>
+
+    <style name="AppNameTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/font_very_large</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
+</resources>
