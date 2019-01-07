@@ -32,6 +32,8 @@ ext {
     navigationVersion = '1.0.0-alpha09'
     lifecycleVersion = '2.1.0-alpha01'
     leakCanaryVersion = '1.6.2'
+    junitVersion = '4.12'
+    mockitoVersion = '2.23.0'
     myCompileSdkVersion = 28
     myMinSdkVersion = 19
     myTargetSdkVersion = 28
