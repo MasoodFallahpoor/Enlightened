@@ -34,7 +34,7 @@ class NewsListViewModel(
                 .doFinally { setLoadingLiveData(false) }
                 .subscribe(
                     { newsList ->
-                        newsListLiveData.value = newsListDataMapper.transformNewsList(newsList)
+                        newsListLiveData.value = newsListDataMapper.transform(newsList)
                     },
                     { throwable ->
                         setErrorLiveData(exceptionParser.parseException(throwable))
@@ -56,7 +56,7 @@ class NewsListViewModel(
                 .subscribe(
                     { newsList ->
                         pageNumber++
-                        newsListLiveData.value = newsListDataMapper.transformNewsList(newsList)
+                        newsListLiveData.value = newsListDataMapper.transform(newsList)
                     },
                     { throwable ->
                         setErrorLiveData(exceptionParser.parseException(throwable))

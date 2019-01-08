@@ -31,7 +31,7 @@ class SearchNewsViewModel(
             .doFinally { setLoadingLiveData(false) }
             .subscribe(
                 { newsList ->
-                    newsListLiveData.value = newsListDataMapper.transformNewsList(newsList)
+                    newsListLiveData.value = newsListDataMapper.transform(newsList)
                 },
                 { throwable ->
                     setErrorLiveData(exceptionParser.parseException(throwable))
@@ -52,7 +52,7 @@ class SearchNewsViewModel(
             .subscribe(
                 { newsList ->
                     pageNumber++
-                    newsListLiveData.value = newsListDataMapper.transformNewsList(newsList)
+                    newsListLiveData.value = newsListDataMapper.transform(newsList)
                 },
                 { throwable ->
                     setErrorLiveData(exceptionParser.parseException(throwable))

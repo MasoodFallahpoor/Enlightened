@@ -7,7 +7,7 @@ import javax.inject.Inject
 class NewsListDataMapper @Inject
 constructor() {
 
-    fun transformNewsList(newsList: List<News>): List<NewsModel> {
+    fun transform(newsList: List<News>): List<NewsModel> {
 
         val newsModels = arrayListOf<NewsModel>()
 
