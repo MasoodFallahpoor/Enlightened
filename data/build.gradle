@@ -35,5 +35,7 @@ dependencies {
     implementation "androidx.room:room-rxjava2:$roomVersion"
     implementation "javax.inject:javax.inject:$injectVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation 'com.google.truth:truth:0.42'
     implementation project(":domain")
 }
