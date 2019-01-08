@@ -5,22 +5,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/space_medium"
+    android:layout_marginTop="@dimen/space_medium"
+    android:layout_marginBottom="@dimen/space_medium"
     app:cardBackgroundColor="@color/backgroundCardView"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="0dp"
+    app:cardElevation="3dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/newsImageImageView"
-            android:layout_width="@dimen/news_image_width"
-            android:layout_height="@dimen/news_image_height"
-            android:scaleType="fitXY"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/newsImageCardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_medium"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/backgrounds/scenic"/>
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/newsImageImageView"
+                android:layout_width="@dimen/news_image_width"
+                android:layout_height="@dimen/news_image_height"
+                android:scaleType="fitXY"
+                tools:src="@tools:sample/backgrounds/scenic"/>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/newsTitleTextView"
@@ -29,10 +42,12 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:padding="@dimen/space_medium"
+            android:paddingLeft="@dimen/space_medium"
+            android:paddingRight="@dimen/space_medium"
+            android:paddingBottom="@dimen/space_medium"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/newsImageImageView"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/newsImageCardView"
+            app:layout_constraintTop_toTopOf="@id/newsImageCardView"
             tools:text="News title goes here"/>
 
         <TextView
@@ -45,7 +60,7 @@
             android:paddingRight="@dimen/space_medium"
             android:paddingBottom="@dimen/space_small"
             app:layout_constraintBottom_toTopOf="@id/newsPublishDateTextView"
-            app:layout_constraintStart_toEndOf="@id/newsImageImageView"
+            app:layout_constraintStart_toEndOf="@id/newsImageCardView"
             tools:text="News source goes here"/>
 
         <TextView
@@ -56,9 +71,8 @@
             android:paddingLeft="@dimen/space_medium"
             android:paddingTop="@dimen/space_small"
             android:paddingRight="@dimen/space_medium"
-            android:paddingBottom="@dimen/space_medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/newsImageImageView"
+            app:layout_constraintBottom_toBottomOf="@id/newsImageCardView"
+            app:layout_constraintStart_toEndOf="@id/newsImageCardView"
             tools:text="News publish date goes here"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
