@@ -40,7 +40,7 @@ constructor() {
     private fun removeNewsSourceFromNewsTitle(title: String): String {
         val indexOfSeparator = title.indexOfLast { it == '-' || it == '|' }
         return if (indexOfSeparator != -1) {
-            title.substring(0, indexOfSeparator)
+            title.substring(0, indexOfSeparator).trim()
         } else {
             title
         }
