@@ -34,6 +34,7 @@ ext {
     leakCanaryVersion = '1.6.2'
     junitVersion = '4.12'
     mockitoVersion = '2.23.0'
+    truthVersion = '0.42'
     myCompileSdkVersion = 28
     myMinSdkVersion = 19
     myTargetSdkVersion = 28
