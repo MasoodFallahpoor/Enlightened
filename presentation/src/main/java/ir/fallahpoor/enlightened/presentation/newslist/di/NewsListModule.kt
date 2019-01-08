@@ -8,20 +8,10 @@ import ir.fallahpoor.enlightened.data.repository.Database
 import ir.fallahpoor.enlightened.data.repository.NewsRepositoryImpl
 import ir.fallahpoor.enlightened.data.repository.dao.NewsDao
 import ir.fallahpoor.enlightened.data.repository.datasource.NewsDataSourceFactory
-import ir.fallahpoor.enlightened.domain.interactor.GetNewsUseCase
 import ir.fallahpoor.enlightened.domain.repository.NewsRepository
-import ir.fallahpoor.enlightened.presentation.common.ExceptionParser
-import ir.fallahpoor.enlightened.presentation.newslist.model.NewsListDataMapper
-import ir.fallahpoor.enlightened.presentation.newslist.viewmodel.NewsListViewModelFactory
 
 @Module
 class NewsListModule {
-
-    @Provides
-    internal fun provideNewsViewModelFactory(
-        getNewsUseCase: GetNewsUseCase, newsListDataMapper: NewsListDataMapper,
-        exceptionParser: ExceptionParser
-    ) = NewsListViewModelFactory(getNewsUseCase, newsListDataMapper, exceptionParser)
 
     @Provides
     internal fun provideNewsRepository(
