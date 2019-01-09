@@ -32,7 +32,7 @@ class NewsListFragment : Fragment() {
     lateinit var preferencesManager: PreferencesManager
 
     private lateinit var newsListViewModel: NewsListViewModel
-    private var newsAdapter = NewsAdapter()
+    private lateinit var newsAdapter: NewsAdapter
     private var isLoadingMoreNews = false
     private val COUNTRY = "us"
 
@@ -140,7 +140,10 @@ class NewsListFragment : Fragment() {
 
         with(newsListRecyclerView) {
             layoutManager = LinearLayoutManager(activity!!)
-            newsAdapter = NewsAdapter(newsList) { news: NewsModel -> openNewsInBrowser(news.url) }
+            newsAdapter = NewsAdapter(
+                activity!!,
+                newsList
+            ) { news: NewsModel -> openNewsInBrowser(news.url) }
             adapter = newsAdapter
             visibility = View.VISIBLE
             addOnScrollListener(object :

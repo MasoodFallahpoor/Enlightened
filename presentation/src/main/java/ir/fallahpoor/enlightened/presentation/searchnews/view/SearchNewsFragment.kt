@@ -36,7 +36,7 @@ class SearchNewsFragment : Fragment() {
 
     private lateinit var searchNewsViewModel: SearchNewsViewModel
     private var disposable: Disposable? = null
-    private var newsAdapter = NewsAdapter()
+    private lateinit var newsAdapter: NewsAdapter
     private var isLoadingMoreNews = false
 
     override fun onCreateView(
@@ -178,7 +178,10 @@ class SearchNewsFragment : Fragment() {
     private fun initializeRecyclerViewWith(newsList: List<NewsModel>) {
         with(searchResultsRecyclerView) {
             layoutManager = LinearLayoutManager(activity!!)
-            newsAdapter = NewsAdapter(newsList) { news: NewsModel -> openNewsInBrowser(news.url) }
+            newsAdapter = NewsAdapter(
+                activity!!,
+                newsList
+            ) { news: NewsModel -> openNewsInBrowser(news.url) }
             adapter = newsAdapter
             visibility = View.VISIBLE
             addOnScrollListener(object :
