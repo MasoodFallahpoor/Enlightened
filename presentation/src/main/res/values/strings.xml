@@ -28,6 +28,7 @@
     <string name="news_deleted">News deleted</string>
     <string name="news_deletion_failed">Could not delete news</string>
     <string name="no_search_result_formatted">No results for \"%s\"</string>
+    <string name="app_version_formatted">v%s</string>
     <string-array name="news_categories">
         <item>All</item>
         <item>Business</item>
