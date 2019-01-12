@@ -48,7 +48,6 @@
             android:id="@+id/noResultTextView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="@dimen/space_large"
             android:background="@color/backgroundPrimary"
             android:gravity="center"
             android:textColor="@color/textColorPrimary"
