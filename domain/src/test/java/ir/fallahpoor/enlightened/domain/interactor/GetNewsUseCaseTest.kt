@@ -15,7 +15,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
-
 @RunWith(MockitoJUnitRunner::class)
 class GetNewsUseCaseTest {
 
@@ -59,11 +58,10 @@ class GetNewsUseCaseTest {
     fun getNews_should_fail() {
 
         // Given
-        val throwable = Throwable()
         Mockito.`when`(mockedPostExecutionThread.getScheduler())
             .thenReturn(Schedulers.trampoline())
         Mockito.`when`(mockedNewsRepository.getNews(anyString(), anyString(), anyInt(), anyInt()))
-            .thenReturn(Single.error(throwable))
+            .thenReturn(Single.error(Throwable()))
         val testObserver = TestObserver<List<News>>()
 
         // When
@@ -75,7 +73,7 @@ class GetNewsUseCaseTest {
         // Then
         Mockito.verify(mockedNewsRepository).getNews(COUNTRY, CATEGORY, PAGE_NUMBER, PAGE_SIZE)
         Mockito.verifyNoMoreInteractions(mockedNewsRepository)
-        testObserver.assertError(throwable)
+        testObserver.assertError(Throwable::class.java)
 
     }
 
