@@ -18,6 +18,8 @@
     <string name="preference_title_news_category">News Category</string>
     <string name="preference_summary_news_category">Sets the category you want to get news for.</string>
     <string name="preference_key_news_category">newsCategory</string>
+    <string name="preference_category_news_category">Category</string>
+    <string name="preference_category_cache">Cache</string>
     <string name="delete_news_confirmation_message">Are you sure to delete all news?</string>
     <string name="not_now">Not now</string>
     <string name="delete_news">Delete them all!</string>
@@ -36,7 +38,7 @@
         <item>Technology</item>
     </string-array>
     <string-array name="news_categories_values">
-        <item></item>
+        <item>general</item>
         <item>business</item>
         <item>entertainment</item>
         <item>health</item>

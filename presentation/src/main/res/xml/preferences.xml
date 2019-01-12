@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:title="Cache">
+        app:title="@string/preference_category_cache">
 
         <SwitchPreferenceCompat
             android:defaultValue="true"
@@ -20,10 +20,10 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="Category">
+        app:title="@string/preference_category_news_category">
 
         <ListPreference
-            android:defaultValue=""
+            android:defaultValue="general"
             android:dialogTitle="News Category"
             android:entries="@array/news_categories"
             android:entryValues="@array/news_categories_values"
