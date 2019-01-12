@@ -163,7 +163,7 @@ class SearchNewsFragment : Fragment() {
 
         if (newsList.isEmpty()) {
             noResultTextView.visibility = View.VISIBLE
-            noResultTextView.text = "No results for " + "\"" + searchView.query.toString() + "\""
+            noResultTextView.text = getString(R.string.no_search_result_formatted, searchView.query)
         } else {
             noResultTextView.visibility = View.GONE
             if (isLoadingMoreNews) {
