@@ -18,6 +18,7 @@ import ir.fallahpoor.enlightened.presentation.app.App
 import ir.fallahpoor.enlightened.presentation.common.EndlessOnScrollListener
 import ir.fallahpoor.enlightened.presentation.newslist.di.DaggerNewsListComponent
 import ir.fallahpoor.enlightened.presentation.newslist.model.NewsModel
+import ir.fallahpoor.enlightened.presentation.newslist.view.state.*
 import ir.fallahpoor.enlightened.presentation.newslist.viewmodel.NewsListViewModel
 import ir.fallahpoor.enlightened.presentation.newslist.viewmodel.NewsListViewModelFactory
 import kotlinx.android.synthetic.main.fragment_news_list.*
@@ -32,12 +33,12 @@ class NewsListFragment : Fragment() {
     lateinit var preferencesManager: PreferencesManager
 
     private lateinit var newsListViewModel: NewsListViewModel
-    private lateinit var newsAdapter: NewsAdapter
-    private var isLoadingMoreNews = false
+    private var newsAdapter = NewsAdapter()
     private val COUNTRY = "us"
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
@@ -51,10 +52,11 @@ class NewsListFragment : Fragment() {
 
         super.onActivityCreated(savedInstanceState)
 
+        setupRecyclerView()
         setupViewModel()
         subscribeToViewModel()
 
-        getNews(false)
+        newsListViewModel.getNews(COUNTRY, getNewsCategory())
 
     }
 
@@ -65,6 +67,19 @@ class NewsListFragment : Fragment() {
             .inject(this)
     }
 
+    private fun setupRecyclerView() {
+        with(newsListRecyclerView) {
+            layoutManager = LinearLayoutManager(activity!!)
+            adapter = newsAdapter
+            addOnScrollListener(object :
+                EndlessOnScrollListener(layoutManager as LinearLayoutManager) {
+                override fun onLoadMore() {
+                    newsListViewModel.getMoreNews()
+                }
+            })
+        }
+    }
+
     private fun setupViewModel() {
         newsListViewModel = ViewModelProviders.of(this, newsListViewModelFactory)
             .get(NewsListViewModel::class.java)
@@ -72,29 +87,24 @@ class NewsListFragment : Fragment() {
 
     private fun subscribeToViewModel() {
 
-        newsListViewModel.getLoadingLiveData().observe(
+        newsListViewModel.viewStateLiveData.observe(
             this,
-            Observer { show -> if (show) showLoading() else hideLoading() })
+            Observer { viewState ->
+                run {
+                    hideLoading()
+                    when (viewState) {
+                        is LoadingState -> showLoading()
+                        is DataLoadedState -> renderNews(viewState.news)
+                        is LoadDataErrorState -> renderLoadNewsError(viewState.errorMessage)
+                        is MoreDataLoadedState -> renderMoreNews(viewState.news)
+                        is LoadMoreDataErrorState -> renderLoadMoreNewsError(
+                            viewState.news,
+                            viewState.errorMessage
+                        )
+                    }
+                }
+            })
 
-        newsListViewModel.getErrorLiveData().observe(
-            this,
-            Observer { errorMessage -> showError(errorMessage) }
-        )
-
-        newsListViewModel.newsListLiveData.observe(
-            this,
-            Observer { newsList -> showNews(newsList) })
-
-    }
-
-    private fun getNews(loadMore: Boolean) {
-        if (loadMore) {
-            isLoadingMoreNews = true
-            newsListViewModel.getMoreNews()
-        } else {
-            isLoadingMoreNews = false
-            newsListViewModel.getNews(COUNTRY, getNewsCategory())
-        }
     }
 
     private fun showLoading() {
@@ -106,55 +116,49 @@ class NewsListFragment : Fragment() {
         loading.visibility = View.INVISIBLE
     }
 
-    private fun showError(errorMessage: String) {
-        if (isLoadingMoreNews) {
-            showLoadMoreError()
-        } else {
-            setupTryAgainLayout(errorMessage)
-            newsListRecyclerView.visibility = View.GONE
-        }
+    private fun renderNews(newsList: List<NewsModel>) {
+        tryAgain.visibility = View.GONE
+        newsAdapter = createNewsAdapter(newsList)
+        newsListRecyclerView.adapter = newsAdapter
+        newsListRecyclerView.visibility = View.VISIBLE
     }
 
-    private fun showLoadMoreError() {
-        Toast.makeText(activity, R.string.internet_not_connected, Toast.LENGTH_SHORT).show()
+    private fun renderLoadNewsError(errorMessage: String) {
+        setupTryAgainLayout(errorMessage)
+        newsListRecyclerView.visibility = View.GONE
     }
 
     private fun setupTryAgainLayout(errorMessage: String) {
         errorMessageTextView.text = errorMessage
         tryAgainButton.setOnClickListener {
-            getNews(false)
+            newsListViewModel.getNews(COUNTRY, getNewsCategory())
         }
         tryAgain.visibility = View.VISIBLE
     }
 
-    private fun showNews(newsList: List<NewsModel>) {
+    private fun renderMoreNews(news: List<NewsModel>) {
         tryAgain.visibility = View.GONE
-        if (isLoadingMoreNews) {
-            newsAdapter.appendNews(newsList)
-        } else {
-            initializeRecyclerViewWith(newsList)
-        }
+        newsListRecyclerView.visibility = View.VISIBLE
+        newsAdapter.addNews(news.minus(newsAdapter.getNews()))
     }
 
-    private fun initializeRecyclerViewWith(newsList: List<NewsModel>) {
-
-        with(newsListRecyclerView) {
-            layoutManager = LinearLayoutManager(activity!!)
-            newsAdapter = NewsAdapter(
-                activity!!,
-                newsList
-            ) { news: NewsModel -> openNewsInBrowser(news.url) }
-            adapter = newsAdapter
-            visibility = View.VISIBLE
-            addOnScrollListener(object :
-                EndlessOnScrollListener(layoutManager as LinearLayoutManager) {
-                override fun onLoadMore() {
-                    getNews(true)
-                }
-            })
+    private fun renderLoadMoreNewsError(newsList: List<NewsModel>, errorMessage: String) {
+        tryAgain.visibility = View.GONE
+        if (newsListRecyclerView.adapter?.itemCount == 0) {
+            // When state is LOAD_MORE_ERROR and adapter's itemCount is 0
+            // it means a config change has occurred so the RecyclerView
+            // must be reinitialized.
+            newsAdapter = createNewsAdapter(newsList)
+            newsListRecyclerView.adapter = newsAdapter
         }
-
+        newsListRecyclerView.visibility = View.VISIBLE
+        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
     }
+
+    private fun createNewsAdapter(newsList: List<NewsModel>) =
+        NewsAdapter(context!!, newsList) { news: NewsModel ->
+            openNewsInBrowser(news.url)
+        }
 
     private fun openNewsInBrowser(newsUrl: String) {
         CustomTabsIntent.Builder()

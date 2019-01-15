@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import ir.fallahpoor.enlightened.R
@@ -12,14 +11,22 @@ import ir.fallahpoor.enlightened.presentation.newslist.model.NewsModel
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.recycler_item_news.*
 
-class NewsAdapter(
-    private val context: Context,
-    news: List<NewsModel>,
-    private var clickListener: ((NewsModel) -> Unit)?
-) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter() : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
-    private val newsList = ArrayList<NewsModel>(news)
+    constructor(
+        context: Context,
+        news: List<NewsModel>,
+        clickListener: ((NewsModel) -> Unit)?
+    ) : this() {
+        newsList.addAll(news)
+//        this.context = context
+        this.clickListener = clickListener
+    }
+
+    private val newsList = ArrayList<NewsModel>()
     private var lastPosition = -1
+//    private lateinit var context: Context
+    private var clickListener: ((NewsModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         NewsViewHolder(
@@ -37,18 +44,20 @@ class NewsAdapter(
 
     private fun animateItemView(itemView: View, position: Int) {
         if (itemAlreadyNotAnimated(position)) {
-            val animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
-            itemView.startAnimation(animation)
+//            val animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
+//            itemView.startAnimation(animation)
             lastPosition = position
         }
     }
 
     private fun itemAlreadyNotAnimated(position: Int) = (position > lastPosition)
 
-    fun appendNews(news: List<NewsModel>) {
+    fun addNews(news: List<NewsModel>) {
         newsList.addAll(news)
         notifyItemRangeChanged(itemCount, news.size)
     }
+
+    fun getNews() = newsList
 
     class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), LayoutContainer {
 
