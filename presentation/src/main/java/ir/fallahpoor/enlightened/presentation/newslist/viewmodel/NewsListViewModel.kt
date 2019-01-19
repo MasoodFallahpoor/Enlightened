@@ -74,7 +74,6 @@ class NewsListViewModel(
                     },
                     { throwable ->
                         viewStateLiveData.value = LoadMoreDataErrorState(
-                            newsList,
                             exceptionParser.parseException(throwable)
                         )
                     }
@@ -82,6 +81,12 @@ class NewsListViewModel(
 
         addDisposable(d)
 
+    }
+
+    fun initializeState() {
+        if (viewStateLiveData.value is LoadMoreDataErrorState) {
+            viewStateLiveData.value = DataLoadedState(newsList)
+        }
     }
 
 }

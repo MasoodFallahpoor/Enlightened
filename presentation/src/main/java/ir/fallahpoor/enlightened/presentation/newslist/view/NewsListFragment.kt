@@ -53,7 +53,7 @@ class NewsListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         setupRecyclerView()
-        setupViewModel()
+        setupViewModel(savedInstanceState != null)
         subscribeToViewModel()
 
         newsListViewModel.getNews(COUNTRY, getNewsCategory())
@@ -69,7 +69,7 @@ class NewsListFragment : Fragment() {
 
     private fun setupRecyclerView() {
         with(newsListRecyclerView) {
-            layoutManager = LinearLayoutManager(activity!!)
+            layoutManager = LinearLayoutManager(context)
             adapter = newsAdapter
             addOnScrollListener(object :
                 EndlessOnScrollListener(layoutManager as LinearLayoutManager) {
@@ -80,9 +80,12 @@ class NewsListFragment : Fragment() {
         }
     }
 
-    private fun setupViewModel() {
+    private fun setupViewModel(isActivityRestored: Boolean) {
         newsListViewModel = ViewModelProviders.of(this, newsListViewModelFactory)
             .get(NewsListViewModel::class.java)
+        if (isActivityRestored) {
+            newsListViewModel.initializeState()
+        }
     }
 
     private fun subscribeToViewModel() {
@@ -98,7 +101,6 @@ class NewsListFragment : Fragment() {
                         is LoadDataErrorState -> renderLoadNewsError(viewState.errorMessage)
                         is MoreDataLoadedState -> renderMoreNews(viewState.news)
                         is LoadMoreDataErrorState -> renderLoadMoreNewsError(
-                            viewState.news,
                             viewState.errorMessage
                         )
                     }
@@ -120,15 +122,9 @@ class NewsListFragment : Fragment() {
         tryAgain.visibility = View.GONE
         newsAdapter = createNewsAdapter(newsList)
         newsListRecyclerView.adapter = newsAdapter
-        newsListRecyclerView.visibility = View.VISIBLE
     }
 
     private fun renderLoadNewsError(errorMessage: String) {
-        setupTryAgainLayout(errorMessage)
-        newsListRecyclerView.visibility = View.GONE
-    }
-
-    private fun setupTryAgainLayout(errorMessage: String) {
         errorMessageTextView.text = errorMessage
         tryAgainButton.setOnClickListener {
             newsListViewModel.getNews(COUNTRY, getNewsCategory())
@@ -137,21 +133,10 @@ class NewsListFragment : Fragment() {
     }
 
     private fun renderMoreNews(news: List<NewsModel>) {
-        tryAgain.visibility = View.GONE
-        newsListRecyclerView.visibility = View.VISIBLE
         newsAdapter.addNews(news.minus(newsAdapter.getNews()))
     }
 
-    private fun renderLoadMoreNewsError(newsList: List<NewsModel>, errorMessage: String) {
-        tryAgain.visibility = View.GONE
-        if (newsListRecyclerView.adapter?.itemCount == 0) {
-            // When state is LOAD_MORE_ERROR and adapter's itemCount is 0
-            // it means a config change has occurred so the RecyclerView
-            // must be reinitialized.
-            newsAdapter = createNewsAdapter(newsList)
-            newsListRecyclerView.adapter = newsAdapter
-        }
-        newsListRecyclerView.visibility = View.VISIBLE
+    private fun renderLoadMoreNewsError(errorMessage: String) {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
