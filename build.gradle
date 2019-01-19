@@ -31,7 +31,6 @@ ext {
     injectVersion = '1'
     navigationVersion = '1.0.0-alpha09'
     lifecycleVersion = '2.1.0-alpha01'
-    leakCanaryVersion = '1.6.2'
     junitVersion = '4.13-beta-1'
     mockitoVersion = '2.23.4'
     truthVersion = '0.42'
