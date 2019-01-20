@@ -1,10 +1,12 @@
 package ir.fallahpoor.enlightened.presentation.searchnews.view
 
+import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.browser.customtabs.CustomTabsIntent
@@ -13,20 +15,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import ir.fallahpoor.enlightened.R
-import ir.fallahpoor.enlightened.R.*
 import ir.fallahpoor.enlightened.presentation.app.App
 import ir.fallahpoor.enlightened.presentation.common.EndlessOnScrollListener
 import ir.fallahpoor.enlightened.presentation.newslist.model.NewsModel
 import ir.fallahpoor.enlightened.presentation.searchnews.di.DaggerSearchNewsComponent
+import ir.fallahpoor.enlightened.presentation.searchnews.view.state.*
 import ir.fallahpoor.enlightened.presentation.searchnews.viewmodel.SearchNewsViewModel
 import ir.fallahpoor.enlightened.presentation.searchnews.viewmodel.SearchNewsViewModelFactory
 import kotlinx.android.synthetic.main.fragment_search_news.*
 import kotlinx.android.synthetic.main.try_again_layout.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SearchNewsFragment : Fragment() {
@@ -35,15 +33,14 @@ class SearchNewsFragment : Fragment() {
     lateinit var searchNewsViewModelFactory: SearchNewsViewModelFactory
 
     private lateinit var searchNewsViewModel: SearchNewsViewModel
-    private var disposable: Disposable? = null
-    private lateinit var newsAdapter: NewsAdapter
-    private var isLoadingMoreNews = false
+    private var newsAdapter = NewsAdapter()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? =
-        inflater.inflate(layout.fragment_search_news, container, false)
+        inflater.inflate(R.layout.fragment_search_news, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
 
@@ -51,15 +48,11 @@ class SearchNewsFragment : Fragment() {
 
         super.onActivityCreated(savedInstanceState)
 
-        setupViewModel()
+        setupRecyclerView()
+        setupViewModel(savedInstanceState != null)
         subscribeToViewModel()
         setupSearchView()
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        disposable?.dispose()
     }
 
     private fun injectViewModel() {
@@ -69,52 +62,66 @@ class SearchNewsFragment : Fragment() {
             .inject(this)
     }
 
-    private fun setupViewModel() {
+    private fun setupRecyclerView() {
+        with(searchResultsRecyclerView) {
+            layoutManager = LinearLayoutManager(context)
+            adapter = newsAdapter
+            addOnScrollListener(object :
+                EndlessOnScrollListener(layoutManager as LinearLayoutManager) {
+                override fun onLoadMore() {
+                    searchNewsViewModel.searchMoreNews()
+                }
+            })
+        }
+    }
+
+    private fun setupViewModel(isActivityRestored: Boolean) {
         searchNewsViewModel = ViewModelProviders.of(this, searchNewsViewModelFactory)
             .get(SearchNewsViewModel::class.java)
+        if (isActivityRestored) {
+            searchNewsViewModel.initializeState()
+        }
     }
 
     private fun subscribeToViewModel() {
 
-        searchNewsViewModel.getLoadingLiveData().observe(
+        searchNewsViewModel.viewStateLiveData.observe(
             this,
-            Observer { show -> if (show) showLoading() else hideLoading() })
-
-        searchNewsViewModel.getErrorLiveData().observe(
-            this,
-            Observer { errorMessage -> showError(errorMessage) }
-        )
-
-        searchNewsViewModel.newsListLiveData.observe(
-            this,
-            Observer { newsList -> showNews(newsList) })
+            Observer { viewState ->
+                run {
+                    hideLoading()
+                    when (viewState) {
+                        is LoadingState -> showLoading()
+                        is DataLoadedState -> renderNews(viewState.news)
+                        is LoadDataErrorState -> renderLoadNewsError(viewState.errorMessage)
+                        is MoreDataLoadedState -> renderMoreNews(viewState.news)
+                        is LoadMoreDataErrorState -> renderLoadMoreNewsError(viewState.errorMessage)
+                    }
+                }
+            })
 
     }
 
     private fun setupSearchView() {
-        disposable = createSearchObservable()
-            .map { searchQuery -> searchQuery.toLowerCase().trim() }
-            .debounce(500, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .filter { searchQuery -> searchQuery.isNotBlank() }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { searchQuery -> searchNews(searchQuery, false) }
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchNewsViewModel.searchNews(query!!)
+                hideKeyboard()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return true
+            }
+        })
     }
 
-    private fun createSearchObservable(): Observable<String> =
-        Observable.create { subscriber ->
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextChange(newQuery: String?): Boolean {
-                    subscriber.onNext(newQuery!!)
-                    return false
-                }
-
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    subscriber.onNext(query!!)
-                    return false
-                }
-            })
-        }
+    private fun hideKeyboard() {
+        val imm: InputMethodManager =
+            context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.rootView?.windowToken, 0)
+        view?.clearFocus()
+    }
 
     private fun showLoading() {
         tryAgain.visibility = View.GONE
@@ -125,91 +132,57 @@ class SearchNewsFragment : Fragment() {
         loading.visibility = View.INVISIBLE
     }
 
-    private fun showError(errorMessage: String) {
-        if (isLoadingMoreNews) {
-            showLoadMoreError()
-        } else {
-            setupTryAgainLayout(errorMessage)
-            searchResultsRecyclerView.visibility = View.GONE
-            noResultTextView.visibility = View.GONE
-        }
-    }
-
-    private fun showLoadMoreError() {
-        Toast.makeText(activity, R.string.internet_not_connected, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun setupTryAgainLayout(errorMessage: String) {
-        errorMessageTextView.text = errorMessage
-        tryAgainButton.setOnClickListener {
-            searchNews(searchView.query.toString(), false)
-        }
-        tryAgain.visibility = View.VISIBLE
-    }
-
-    private fun searchNews(searchQuery: String, loadMore: Boolean) {
-        if (loadMore) {
-            isLoadingMoreNews = true
-            searchNewsViewModel.searchMoreNews()
-        } else {
-            isLoadingMoreNews = false
-            searchNewsViewModel.searchNews(searchQuery)
-        }
-    }
-
-    private fun showNews(newsList: List<NewsModel>) {
-
-        tryAgain.visibility = View.GONE
+    private fun renderNews(newsList: List<NewsModel>) {
 
         if (newsList.isEmpty()) {
             noResultTextView.visibility = View.VISIBLE
             noResultTextView.text = getString(R.string.no_search_result_formatted, searchView.query)
         } else {
             noResultTextView.visibility = View.GONE
-            if (isLoadingMoreNews) {
-                newsAdapter.appendNews(newsList)
-            } else {
-                initializeRecyclerViewWith(newsList)
-            }
+            newsAdapter = createNewsAdapter(newsList)
+            searchResultsRecyclerView.adapter = newsAdapter
         }
+
+        tryAgain.visibility = View.GONE
 
     }
 
-    private fun initializeRecyclerViewWith(newsList: List<NewsModel>) {
-        with(searchResultsRecyclerView) {
-            layoutManager = LinearLayoutManager(activity!!)
-            newsAdapter = NewsAdapter(
-                activity!!,
-                newsList
-            ) { news: NewsModel -> openNewsInBrowser(news.url) }
-            adapter = newsAdapter
-            visibility = View.VISIBLE
-            addOnScrollListener(object :
-                EndlessOnScrollListener(layoutManager as LinearLayoutManager) {
-                override fun onLoadMore() {
-                    searchNews(searchView.query.toString(), true)
-                }
-            })
+    private fun renderLoadNewsError(errorMessage: String) {
+        errorMessageTextView.text = errorMessage
+        tryAgainButton.setOnClickListener {
+            searchNewsViewModel.searchNews(searchView.query.toString())
         }
+        tryAgain.visibility = View.VISIBLE
     }
+
+    private fun renderMoreNews(news: List<NewsModel>) {
+        newsAdapter.addNews(news.minus(newsAdapter.getNews()))
+    }
+
+    private fun renderLoadMoreNewsError(errorMessage: String) {
+        Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun createNewsAdapter(newsList: List<NewsModel>) =
+        NewsAdapter(newsList) { news: NewsModel -> openNewsInBrowser(news.url) }
 
     private fun openNewsInBrowser(newsUrl: String) {
         CustomTabsIntent.Builder()
             .setToolbarColor(
                 ContextCompat.getColor(
                     activity!!,
-                    color.colorPrimary
+                    R.color.colorPrimary
                 )
             )
             .setStartAnimations(
                 activity!!,
-                anim.slide_in_right,
-                anim.slide_out_left
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
             )
             .setExitAnimations(
                 activity!!,
-                anim.slide_in_left,
-                anim.slide_out_right
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
             )
             .build()
             .launchUrl(activity, Uri.parse(newsUrl))
