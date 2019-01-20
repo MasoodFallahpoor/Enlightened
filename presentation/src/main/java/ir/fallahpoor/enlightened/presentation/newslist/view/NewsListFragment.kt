@@ -110,7 +110,6 @@ class NewsListFragment : Fragment() {
     }
 
     private fun showLoading() {
-        tryAgain.visibility = View.GONE
         loading.visibility = View.VISIBLE
     }
 
