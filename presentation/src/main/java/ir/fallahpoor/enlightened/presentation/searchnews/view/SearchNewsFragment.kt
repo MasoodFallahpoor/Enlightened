@@ -124,7 +124,6 @@ class SearchNewsFragment : Fragment() {
     }
 
     private fun showLoading() {
-        tryAgain.visibility = View.GONE
         loading.visibility = View.VISIBLE
     }
 
@@ -148,6 +147,7 @@ class SearchNewsFragment : Fragment() {
     }
 
     private fun renderLoadNewsError(errorMessage: String) {
+        noResultTextView.visibility = View.GONE
         errorMessageTextView.text = errorMessage
         tryAgainButton.setOnClickListener {
             searchNewsViewModel.searchNews(searchView.query.toString())
