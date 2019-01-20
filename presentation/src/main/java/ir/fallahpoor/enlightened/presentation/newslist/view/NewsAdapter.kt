@@ -1,6 +1,5 @@
 package ir.fallahpoor.enlightened.presentation.newslist.view
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,18 +13,14 @@ import kotlinx.android.synthetic.main.recycler_item_news.*
 class NewsAdapter() : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     constructor(
-        context: Context,
         news: List<NewsModel>,
         clickListener: ((NewsModel) -> Unit)?
     ) : this() {
         newsList.addAll(news)
-//        this.context = context
         this.clickListener = clickListener
     }
 
     private val newsList = ArrayList<NewsModel>()
-    private var lastPosition = -1
-//    private lateinit var context: Context
     private var clickListener: ((NewsModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -39,18 +34,7 @@ class NewsAdapter() : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
         val news: NewsModel = newsList[position]
         holder.bindData(news)
         holder.itemView.setOnClickListener { clickListener?.invoke(news) }
-        animateItemView(holder.itemView, position)
     }
-
-    private fun animateItemView(itemView: View, position: Int) {
-        if (itemAlreadyNotAnimated(position)) {
-//            val animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
-//            itemView.startAnimation(animation)
-            lastPosition = position
-        }
-    }
-
-    private fun itemAlreadyNotAnimated(position: Int) = (position > lastPosition)
 
     fun addNews(news: List<NewsModel>) {
         newsList.addAll(news)

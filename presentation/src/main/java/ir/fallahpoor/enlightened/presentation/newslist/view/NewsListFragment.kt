@@ -141,7 +141,7 @@ class NewsListFragment : Fragment() {
     }
 
     private fun createNewsAdapter(newsList: List<NewsModel>) =
-        NewsAdapter(context!!, newsList) { news: NewsModel ->
+        NewsAdapter(newsList) { news: NewsModel ->
             openNewsInBrowser(news.url)
         }
 
