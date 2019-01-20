@@ -24,8 +24,6 @@ class SearchNewsViewModel(
 
     fun searchNews(searchQuery: String) {
 
-        if (shouldSearchNews()) {
-
             pageNumber = 1
             this.searchQuery = searchQuery
 
@@ -49,12 +47,7 @@ class SearchNewsViewModel(
 
             addDisposable(d)
 
-        }
-
     }
-
-    private fun shouldSearchNews() =
-        (viewStateLiveData.value == null || viewStateLiveData.value is LoadDataErrorState)
 
     fun searchMoreNews() {
 
