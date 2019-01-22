@@ -31,7 +31,7 @@ class NewsListViewModel(
             this.country = country
             this.category = category
 
-            viewStateLiveData.value = LoadingState()
+            setViewState(LoadingState())
 
             val params = GetNewsUseCase.Params.forParams(country, category, pageNumber, PAGE_SIZE)
             val d: Disposable =
@@ -42,11 +42,12 @@ class NewsListViewModel(
                                 clear()
                                 addAll(newsListDataMapper.transform(news))
                             }
-                            viewStateLiveData.value = DataLoadedState(newsList)
+                            setViewState(DataLoadedState(newsList))
                         },
                         { throwable ->
-                            viewStateLiveData.value =
-                                    LoadDataErrorState(exceptionParser.parseException(throwable))
+                            setViewState(
+                                LoadDataErrorState(exceptionParser.parseException(throwable))
+                            )
                         }
                     )
 
@@ -61,7 +62,7 @@ class NewsListViewModel(
 
     fun getMoreNews() {
 
-        viewStateLiveData.value = LoadingState()
+        setViewState(LoadingState())
 
         val params = GetNewsUseCase.Params.forParams(country, category, pageNumber + 1, PAGE_SIZE)
         val d: Disposable =
@@ -70,11 +71,13 @@ class NewsListViewModel(
                     { news ->
                         pageNumber++
                         newsList.addAll(newsListDataMapper.transform(news))
-                        viewStateLiveData.value = MoreDataLoadedState(newsList)
+                        setViewState(MoreDataLoadedState(newsList))
                     },
                     { throwable ->
-                        viewStateLiveData.value = LoadMoreDataErrorState(
-                            exceptionParser.parseException(throwable)
+                        setViewState(
+                            LoadMoreDataErrorState(
+                                exceptionParser.parseException(throwable)
+                            )
                         )
                     }
                 )
@@ -83,10 +86,16 @@ class NewsListViewModel(
 
     }
 
-    fun initializeState() {
-        if (viewStateLiveData.value is LoadMoreDataErrorState) {
-            viewStateLiveData.value = DataLoadedState(newsList)
+    fun adjustState() {
+        if (isNecessaryToAdjustState()) {
+            setViewState(DataLoadedState(newsList))
         }
+    }
+
+    private fun isNecessaryToAdjustState() = (viewStateLiveData.value is LoadMoreDataErrorState)
+
+    private fun setViewState(viewState: ViewState) {
+        viewStateLiveData.value = viewState
     }
 
 }

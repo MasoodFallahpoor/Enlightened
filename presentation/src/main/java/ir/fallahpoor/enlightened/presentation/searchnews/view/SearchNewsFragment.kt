@@ -79,7 +79,7 @@ class SearchNewsFragment : Fragment() {
         searchNewsViewModel = ViewModelProviders.of(this, searchNewsViewModelFactory)
             .get(SearchNewsViewModel::class.java)
         if (isActivityRestored) {
-            searchNewsViewModel.initializeState()
+            searchNewsViewModel.adjustState()
         }
     }
 

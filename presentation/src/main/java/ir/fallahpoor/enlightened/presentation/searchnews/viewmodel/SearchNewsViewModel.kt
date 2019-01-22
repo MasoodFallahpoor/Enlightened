@@ -24,46 +24,24 @@ class SearchNewsViewModel(
 
     fun searchNews(searchQuery: String) {
 
-            pageNumber = 1
-            this.searchQuery = searchQuery
+        pageNumber = 1
+        this.searchQuery = searchQuery
 
-            viewStateLiveData.value = LoadingState()
+        setViewState(LoadingState())
 
-            val params = SearchNewsUseCase.Params.forParams(searchQuery, pageNumber, PAGE_SIZE)
-            val d: Disposable = searchNewsUseCase.execute(params)
-                .subscribe(
-                    { news ->
-                        newsList.apply {
-                            clear()
-                            addAll(newsListDataMapper.transform(news))
-                        }
-                        viewStateLiveData.value = DataLoadedState(newsList)
-                    },
-                    { throwable ->
-                        viewStateLiveData.value =
-                                LoadDataErrorState(exceptionParser.parseException(throwable))
-                    }
-                )
-
-            addDisposable(d)
-
-    }
-
-    fun searchMoreNews() {
-
-        viewStateLiveData.value = LoadingState()
-
-        val params = SearchNewsUseCase.Params.forParams(searchQuery, pageNumber + 1, PAGE_SIZE)
+        val params = SearchNewsUseCase.Params.forParams(searchQuery, pageNumber, PAGE_SIZE)
         val d: Disposable = searchNewsUseCase.execute(params)
             .subscribe(
                 { news ->
-                    pageNumber++
-                    newsList.addAll(newsListDataMapper.transform(news))
-                    viewStateLiveData.value = MoreDataLoadedState(newsList)
+                    newsList.apply {
+                        clear()
+                        addAll(newsListDataMapper.transform(news))
+                    }
+                    setViewState(DataLoadedState(newsList))
                 },
                 { throwable ->
-                    viewStateLiveData.value = LoadMoreDataErrorState(
-                        exceptionParser.parseException(throwable)
+                    setViewState(
+                        LoadDataErrorState(exceptionParser.parseException(throwable))
                     )
                 }
             )
@@ -72,10 +50,41 @@ class SearchNewsViewModel(
 
     }
 
-    fun initializeState() {
-        if (viewStateLiveData.value is LoadMoreDataErrorState) {
-            viewStateLiveData.value = DataLoadedState(newsList)
+    fun searchMoreNews() {
+
+        setViewState(LoadingState())
+
+        val params = SearchNewsUseCase.Params.forParams(searchQuery, pageNumber + 1, PAGE_SIZE)
+        val d: Disposable = searchNewsUseCase.execute(params)
+            .subscribe(
+                { news ->
+                    pageNumber++
+                    newsList.addAll(newsListDataMapper.transform(news))
+                    setViewState(MoreDataLoadedState(newsList))
+                },
+                { throwable ->
+                    setViewState(
+                        LoadMoreDataErrorState(
+                            exceptionParser.parseException(throwable)
+                        )
+                    )
+                }
+            )
+
+        addDisposable(d)
+
+    }
+
+    fun adjustState() {
+        if (isNecessaryToAdjustState()) {
+            setViewState(DataLoadedState(newsList))
         }
+    }
+
+    private fun isNecessaryToAdjustState() = (viewStateLiveData.value is LoadMoreDataErrorState)
+
+    private fun setViewState(viewState: ViewState) {
+        viewStateLiveData.value = viewState
     }
 
 }

@@ -84,7 +84,7 @@ class NewsListFragment : Fragment() {
         newsListViewModel = ViewModelProviders.of(this, newsListViewModelFactory)
             .get(NewsListViewModel::class.java)
         if (isActivityRestored) {
-            newsListViewModel.initializeState()
+            newsListViewModel.adjustState()
         }
     }
 
