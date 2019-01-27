@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "276721920895",
+    "firebase_url": "https://enlightened-3e722.firebaseio.com",
+    "project_id": "enlightened-3e722",
+    "storage_bucket": "enlightened-3e722.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276721920895:android:4c007e9de3efd815",
+        "android_client_info": {
+          "package_name": "ir.fallahpoor.enlightened"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276721920895-vsicc8d9bic7b97osh97tl5ds0ansg4g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ir.fallahpoor.enlightened",
+            "certificate_hash": "82176c89c78c8581de68ae21258c2e40f4fa7292"
+          }
+        },
+        {
+          "client_id": "276721920895-926o0f3gfetj484cmu0igt502rgm9pu5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4hE2k273CWlfAclrGimSKAKggiXBuhfk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276721920895-926o0f3gfetj484cmu0igt502rgm9pu5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
