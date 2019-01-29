@@ -30,8 +30,8 @@ constructor(
 
         return if (newsCache.isCacheEnabled()) {
             newsObservable
-                .doOnSuccess { newsListEntity: List<NewsEntity> ->
-                    cacheNews(pageNumber, newsListEntity)
+                .doOnSuccess { newsEntityList: List<NewsEntity> ->
+                    cacheNews(pageNumber, newsEntityList)
                 }
                 .onErrorResumeNext { newsCache.getNews(pageNumber, pageSize) }
         } else {

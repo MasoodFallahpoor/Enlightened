@@ -1,11 +1,9 @@
 package ir.fallahpoor.enlightened.presentation.newslist.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import io.reactivex.disposables.Disposable
 import ir.fallahpoor.enlightened.domain.interactor.GetNewsUseCase
 import ir.fallahpoor.enlightened.presentation.BaseViewModel
 import ir.fallahpoor.enlightened.presentation.common.ExceptionParser
-import ir.fallahpoor.enlightened.presentation.common.ViewState
 import ir.fallahpoor.enlightened.presentation.newslist.model.NewsListDataMapper
 import ir.fallahpoor.enlightened.presentation.newslist.model.NewsModel
 import ir.fallahpoor.enlightened.presentation.newslist.view.state.*
@@ -16,12 +14,11 @@ class NewsListViewModel(
     private val exceptionParser: ExceptionParser
 ) : BaseViewModel() {
 
-    val viewStateLiveData = MutableLiveData<ViewState>()
     private val newsList = arrayListOf<NewsModel>()
-    private var pageNumber = 1
-    private val PAGE_SIZE = 20
     private lateinit var country: String
     private lateinit var category: String
+    private var pageNumber = 1
+    private val PAGE_SIZE = 20
 
     fun getNews(country: String, category: String) {
 
@@ -58,7 +55,7 @@ class NewsListViewModel(
     }
 
     private fun shouldFetchNews() =
-        (viewStateLiveData.value == null || viewStateLiveData.value is LoadDataErrorState)
+        (getViewStateLiveData().value == null || getViewStateLiveData().value is LoadDataErrorState)
 
     fun getMoreNews() {
 
@@ -92,10 +89,7 @@ class NewsListViewModel(
         }
     }
 
-    private fun isNecessaryToAdjustState() = (viewStateLiveData.value is LoadMoreDataErrorState)
-
-    private fun setViewState(viewState: ViewState) {
-        viewStateLiveData.value = viewState
-    }
+    private fun isNecessaryToAdjustState() =
+        getViewStateLiveData().value is LoadMoreDataErrorState
 
 }

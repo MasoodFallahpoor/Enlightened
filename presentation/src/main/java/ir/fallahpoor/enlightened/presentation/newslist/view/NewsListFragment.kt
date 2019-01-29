@@ -90,7 +90,7 @@ class NewsListFragment : Fragment() {
 
     private fun subscribeToViewModel() {
 
-        newsListViewModel.viewStateLiveData.observe(
+        newsListViewModel.getViewStateLiveData().observe(
             this,
             Observer { viewState ->
                 run {

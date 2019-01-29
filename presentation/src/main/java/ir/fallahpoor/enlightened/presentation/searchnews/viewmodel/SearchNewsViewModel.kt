@@ -1,11 +1,9 @@
 package ir.fallahpoor.enlightened.presentation.searchnews.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import io.reactivex.disposables.Disposable
 import ir.fallahpoor.enlightened.domain.interactor.SearchNewsUseCase
 import ir.fallahpoor.enlightened.presentation.BaseViewModel
 import ir.fallahpoor.enlightened.presentation.common.ExceptionParser
-import ir.fallahpoor.enlightened.presentation.common.ViewState
 import ir.fallahpoor.enlightened.presentation.newslist.model.NewsListDataMapper
 import ir.fallahpoor.enlightened.presentation.newslist.model.NewsModel
 import ir.fallahpoor.enlightened.presentation.searchnews.view.state.*
@@ -16,11 +14,10 @@ class SearchNewsViewModel(
     private val exceptionParser: ExceptionParser
 ) : BaseViewModel() {
 
-    val viewStateLiveData = MutableLiveData<ViewState>()
+    private val newsList = arrayListOf<NewsModel>()
+    private lateinit var searchQuery: String
     private var pageNumber = 1
     private val PAGE_SIZE = 20
-    private lateinit var searchQuery: String
-    private val newsList = arrayListOf<NewsModel>()
 
     fun searchNews(searchQuery: String) {
 
@@ -81,10 +78,7 @@ class SearchNewsViewModel(
         }
     }
 
-    private fun isNecessaryToAdjustState() = (viewStateLiveData.value is LoadMoreDataErrorState)
-
-    private fun setViewState(viewState: ViewState) {
-        viewStateLiveData.value = viewState
-    }
+    private fun isNecessaryToAdjustState() =
+        getViewStateLiveData().value is LoadMoreDataErrorState
 
 }

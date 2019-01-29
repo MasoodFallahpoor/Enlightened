@@ -85,7 +85,7 @@ class SearchNewsFragment : Fragment() {
 
     private fun subscribeToViewModel() {
 
-        searchNewsViewModel.viewStateLiveData.observe(
+        searchNewsViewModel.getViewStateLiveData().observe(
             this,
             Observer { viewState ->
                 run {
