@@ -1,6 +1,6 @@
 Enlightened
 ===========
-[![Build Status](https://travis-ci.com/MasoodFallahpoor/Enlightened.svg?branch=master)](https://travis-ci.com/MasoodFallahpoor/Enlightened)
+[![Build Status](https://travis-ci.com/MasoodFallahpoor/Enlightened.svg?branch=master)](https://travis-ci.com/MasoodFallahpoor/Enlightened) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b919ed970a2c47319821a81deeeae94c)](https://www.codacy.com/app/MasoodFallahpoor/Enlightened?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MasoodFallahpoor/Enlightened&amp;utm_campaign=Badge_Grade)
 
 Enlightened is a news reader app.
 
