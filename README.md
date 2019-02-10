@@ -1,5 +1,7 @@
 Enlightened
 ===========
+[![Build Status](https://travis-ci.com/MasoodFallahpoor/Enlightened.svg?branch=master)](https://travis-ci.com/MasoodFallahpoor/Enlightened)
+
 Enlightened is a news reader app.
 
 Goal
