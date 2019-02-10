@@ -20,7 +20,7 @@ constructor(
             @Suppress("UNCHECKED_CAST")
             return SearchNewsViewModel(searchNewsUseCase, newsListDataMapper, exceptionParser) as T
         } else {
-            throw IllegalArgumentException("Unknown ViewModel class");
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
 
     }
