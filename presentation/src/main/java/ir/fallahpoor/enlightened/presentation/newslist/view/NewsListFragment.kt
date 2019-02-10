@@ -1,16 +1,14 @@
 package ir.fallahpoor.enlightened.presentation.newslist.view
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ir.fallahpoor.enlightened.R
 import ir.fallahpoor.enlightened.data.PreferencesManager
@@ -21,6 +19,7 @@ import ir.fallahpoor.enlightened.presentation.newslist.model.NewsModel
 import ir.fallahpoor.enlightened.presentation.newslist.view.state.*
 import ir.fallahpoor.enlightened.presentation.newslist.viewmodel.NewsListViewModel
 import ir.fallahpoor.enlightened.presentation.newslist.viewmodel.NewsListViewModelFactory
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.android.synthetic.main.try_again_layout.*
 import javax.inject.Inject
@@ -141,30 +140,10 @@ class NewsListFragment : Fragment() {
 
     private fun createNewsAdapter(newsList: List<NewsModel>) =
         NewsAdapter(newsList) { news: NewsModel ->
-            openNewsInBrowser(news.url)
+            navHostFragment.findNavController().navigate(
+                NewsListFragmentDirections.actionNewsListFragmentToNewsDetailsFragment(news.url)
+            )
         }
-
-    private fun openNewsInBrowser(newsUrl: String) {
-        CustomTabsIntent.Builder()
-            .setToolbarColor(
-                ContextCompat.getColor(
-                    activity!!,
-                    R.color.colorPrimary
-                )
-            )
-            .setStartAnimations(
-                activity!!,
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
-            .setExitAnimations(
-                activity!!,
-                R.anim.slide_in_left,
-                R.anim.slide_out_right
-            )
-            .build()
-            .launchUrl(activity, Uri.parse(newsUrl))
-    }
 
     private fun getNewsCategory() =
         preferencesManager.getString(getString(R.string.preference_key_news_category))

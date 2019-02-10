@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_newsListFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"/>
+        <action
+            android:id="@+id/action_newsListFragment_to_newsDetailsFragment"
+            app:destination="@id/newsDetailsFragment"/>
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -29,10 +32,23 @@
         android:id="@+id/searchNewsFragment"
         android:name="ir.fallahpoor.enlightened.presentation.searchnews.view.SearchNewsFragment"
         android:label="@string/search"
-        tools:layout="@layout/fragment_search_news"/>
+        tools:layout="@layout/fragment_search_news">
+        <action
+            android:id="@+id/action_searchNewsFragment_to_newsDetailsFragment"
+            app:destination="@id/newsDetailsFragment"/>
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="ir.fallahpoor.enlightened.presentation.settings.SettingsFragment"
         android:label="@string/settings"/>
+    <fragment
+        android:id="@+id/newsDetailsFragment"
+        android:name="ir.fallahpoor.enlightened.presentation.newsdetails.NewsDetailsFragment"
+        android:label="@string/news_details"
+        tools:layout="@layout/fragment_news_details">
+        <argument
+            android:name="newsUrl"
+            app:argType="string"/>
+    </fragment>
 
 </navigation>

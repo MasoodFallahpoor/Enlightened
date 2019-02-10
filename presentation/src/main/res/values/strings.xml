@@ -9,6 +9,7 @@
     <string name="news">News</string>
     <string name="search_news">Search news</string>
     <string name="settings">Settings</string>
+    <string name="news_details">News Details</string>
     <string name="preference_title_save_news">Save News</string>
     <string name="preference_summary_save_news">Stores a copy of news on your device for offline browsing.</string>
     <string name="preference_key_save_news">saveNews</string>

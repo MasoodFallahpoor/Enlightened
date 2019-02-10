@@ -1,7 +1,6 @@
 package ir.fallahpoor.enlightened.presentation.searchnews.view
 
 import android.app.Activity
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +8,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ir.fallahpoor.enlightened.R
 import ir.fallahpoor.enlightened.presentation.app.App
@@ -23,6 +21,7 @@ import ir.fallahpoor.enlightened.presentation.searchnews.di.DaggerSearchNewsComp
 import ir.fallahpoor.enlightened.presentation.searchnews.view.state.*
 import ir.fallahpoor.enlightened.presentation.searchnews.viewmodel.SearchNewsViewModel
 import ir.fallahpoor.enlightened.presentation.searchnews.viewmodel.SearchNewsViewModelFactory
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_search_news.*
 import kotlinx.android.synthetic.main.try_again_layout.*
 import javax.inject.Inject
@@ -164,28 +163,10 @@ class SearchNewsFragment : Fragment() {
     }
 
     private fun createNewsAdapter(newsList: List<NewsModel>) =
-        NewsAdapter(newsList) { news: NewsModel -> openNewsInBrowser(news.url) }
-
-    private fun openNewsInBrowser(newsUrl: String) {
-        CustomTabsIntent.Builder()
-            .setToolbarColor(
-                ContextCompat.getColor(
-                    activity!!,
-                    R.color.colorPrimary
-                )
+        NewsAdapter(newsList) { news: NewsModel ->
+            navHostFragment.findNavController().navigate(
+                SearchNewsFragmentDirections.actionSearchNewsFragmentToNewsDetailsFragment(news.url)
             )
-            .setStartAnimations(
-                activity!!,
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
-            .setExitAnimations(
-                activity!!,
-                R.anim.slide_in_left,
-                R.anim.slide_out_right
-            )
-            .build()
-            .launchUrl(activity, Uri.parse(newsUrl))
-    }
+        }
 
 }
