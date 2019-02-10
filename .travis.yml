@@ -1,5 +1,7 @@
 language: android
 jdk: oraclejdk8
+before_install:
+  - chmod +x gradlew
 android:
   components:
     - tools
@@ -9,10 +11,7 @@ android:
     - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
-
-    # Additional components
     - extra-google-google_play_services
-    #- addon-google_apis-google-19
 
   licenses:
     - '.+'
