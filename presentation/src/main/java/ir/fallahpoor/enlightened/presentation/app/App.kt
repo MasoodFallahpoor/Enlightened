@@ -1,8 +1,8 @@
 package ir.fallahpoor.enlightened.presentation.app
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 
-class App : Application() {
+class App : MultiDexApplication() {
 
     val appComponent: AppComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
         DaggerAppComponent

@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'io.fabric'
 
 def final versionMajor = 1
 def final versionMinor = 0
@@ -15,6 +16,7 @@ android {
         applicationId "ir.fallahpoor.enlightened"
         minSdkVersion myMinSdkVersion
         targetSdkVersion myTargetSdkVersion
+        multiDexEnabled true
         versionCode = (versionMajor * 100) + (versionMinor * 10) + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
@@ -46,6 +48,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
@@ -54,6 +57,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycleVersion"
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
+    implementation 'com.android.support:multidex:1.0.3'
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
