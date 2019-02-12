@@ -1,5 +1,6 @@
 package ir.fallahpoor.enlightened.presentation.newsdetails
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,14 +23,23 @@ class NewsDetailsFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
+        setupWebView()
+
+        newsDetailsWebView.loadUrl(getNewsUrl())
+
+    }
+
+    private fun setupWebView() {
         newsDetailsWebView.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                loading.visibility = View.VISIBLE
+            }
+
             override fun onPageFinished(view: WebView?, url: String?) {
                 loading.visibility = View.GONE
             }
         }
         newsDetailsWebView.setBackgroundColor(resources.getColor(R.color.backgroundPrimary))
-        newsDetailsWebView.loadUrl(getNewsUrl())
-
     }
 
     private fun getNewsUrl(): String? {
