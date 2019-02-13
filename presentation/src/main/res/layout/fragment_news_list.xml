@@ -28,9 +28,8 @@
         app:layout_constraintTop_toBottomOf="@+id/loading"
         tools:listitem="@layout/recycler_item_news"/>
 
-    <include
-        android:id="@+id/tryAgain"
-        layout="@layout/try_again_layout"
+    <ir.fallahpoor.enlightened.presentation.common.TryAgainView
+        android:id="@+id/tryAgainView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"

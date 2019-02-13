@@ -21,7 +21,6 @@ import ir.fallahpoor.enlightened.presentation.newslist.viewmodel.NewsListViewMod
 import ir.fallahpoor.enlightened.presentation.newslist.viewmodel.NewsListViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news_list.*
-import kotlinx.android.synthetic.main.try_again_layout.*
 import javax.inject.Inject
 
 class NewsListFragment : Fragment() {
@@ -117,17 +116,16 @@ class NewsListFragment : Fragment() {
     }
 
     private fun renderNews(newsList: List<NewsModel>) {
-        tryAgain.visibility = View.GONE
+        tryAgainView.visibility = View.GONE
         newsAdapter = createNewsAdapter(newsList)
         newsListRecyclerView.adapter = newsAdapter
     }
 
     private fun renderLoadNewsError(errorMessage: String) {
-        errorMessageTextView.text = errorMessage
-        tryAgainButton.setOnClickListener {
-            newsListViewModel.getNews(COUNTRY, getNewsCategory())
-        }
-        tryAgain.visibility = View.VISIBLE
+        tryAgainView.setErrorMessage(errorMessage)
+        tryAgainView.setTryAgainButtonClickListener(
+            View.OnClickListener { newsListViewModel.getNews(COUNTRY, getNewsCategory()) })
+        tryAgainView.visibility = View.VISIBLE
     }
 
     private fun renderMoreNews(news: List<NewsModel>) {

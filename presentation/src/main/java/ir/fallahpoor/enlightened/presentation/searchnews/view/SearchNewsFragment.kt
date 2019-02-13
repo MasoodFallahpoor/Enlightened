@@ -23,7 +23,6 @@ import ir.fallahpoor.enlightened.presentation.searchnews.viewmodel.SearchNewsVie
 import ir.fallahpoor.enlightened.presentation.searchnews.viewmodel.SearchNewsViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_search_news.*
-import kotlinx.android.synthetic.main.try_again_layout.*
 import javax.inject.Inject
 
 class SearchNewsFragment : Fragment() {
@@ -141,17 +140,16 @@ class SearchNewsFragment : Fragment() {
             searchResultsRecyclerView.adapter = newsAdapter
         }
 
-        tryAgain.visibility = View.GONE
+        tryAgainView.visibility = View.GONE
 
     }
 
     private fun renderLoadNewsError(errorMessage: String) {
         noResultTextView.visibility = View.GONE
-        errorMessageTextView.text = errorMessage
-        tryAgainButton.setOnClickListener {
-            searchNewsViewModel.searchNews(searchView.query.toString())
-        }
-        tryAgain.visibility = View.VISIBLE
+        tryAgainView.setErrorMessage(errorMessage)
+        tryAgainView.setTryAgainButtonClickListener(
+            View.OnClickListener { searchNewsViewModel.searchNews(searchView.query.toString()) })
+        tryAgainView.visibility = View.VISIBLE
     }
 
     private fun renderMoreNews(news: List<NewsModel>) {
