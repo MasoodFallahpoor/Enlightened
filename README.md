@@ -12,7 +12,7 @@ Architecture
 ============
 The architecture of Enlightened is based on [Clean Architecture](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html).
 To implement Clean Architecture in Android you can read [Architecting Android...The clean way?](https://fernandocejas.com/2014/09/03/architecting-android-the-clean-way/) and [Android architecture](http://five.agency/android-architecture-part-1-every-new-beginning-is-hard/).
-[Architecting Android...reloaded](https://fernandocejas.com/2018/05/07/architecting-android-reloaded/) is also a very good read.
+[Architecting Android...reloaded](https://fernandocejas.com/2018/05/07/architecting-android-reloaded/) is also a good read.
 
 API
 =====
